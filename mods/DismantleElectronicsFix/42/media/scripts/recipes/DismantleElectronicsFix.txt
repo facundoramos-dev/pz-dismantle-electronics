@@ -1,0 +1,63 @@
+module Base
+{
+    /*
+     * Build 42 splits the small electronics across two vanilla recipes:
+     *
+     *   DismantleElectronics      matches on the base:miscelectronic tag, so
+     *                             it does cover headphones, phones and earbuds,
+     *                             but it also swallows video games, microphones,
+     *                             calculators and hair tools, and its OnCreate
+     *                             is RecipeCodeOnCreate.dismantleFlashlight,
+     *                             the handler written for torches.
+     *
+     *   DismantleMiscElectronics  lists four devices by name and salvages the
+     *                             part with an itemMapper.
+     *
+     * The mapper is the fragile part: OutputMapper.getOutputItem() walks its
+     * table looking for an entry whose pattern matches the item that was
+     * consumed, and returns null when it finds none. A null output makes
+     * CraftRecipeData.createOutputItems() give up, the recipe is marked as
+     * failed, and the item is never consumed: the animation plays, the item
+     * moves between containers, and nothing is dismantled.
+     *
+     * This recipe is the missing branch of that table. It is a new recipe on
+     * purpose: a mod cannot replace a vanilla craft recipe, it can only add
+     * inputs and outputs to it, so naming it differently keeps the two from
+     * piling on top of each other.
+     */
+    craftRecipe DismantlePortableElectronics
+    {
+        timedAction = DismantleElectrical,
+        time = 60,
+        Tags = InHandCraft;Electrical,
+        category = Electrical,
+        xpAward = Electricity:2,
+
+        inputs
+        {
+            item 1 tags[base:screwdriver] mode:keep flags[NoBrokenItems],
+            item 1 [Base.CordlessPhone;Base.Pager;Base.Headphones;Base.Earbuds] flags[ItemCount;ResearchInput] mappers[deviceType] mode:destroy,
+        }
+
+        outputs
+        {
+            item 1 Base.ElectronicsScrap,
+            item 1 mapper:deviceType,
+        }
+
+        /*
+         * Each device gives its own scrap back, the way the radios do. The
+         * default entry is the safety net: without it the mapper returns null
+         * for any device the table does not list, the recipe fails and the
+         * item is never consumed.
+         */
+        itemMapper deviceType
+        {
+            Base.ElectronicsScrap = Base.CordlessPhone,
+            Base.ElectronicsScrap = Base.Pager,
+            Base.ElectronicsScrap = Base.Headphones,
+            Base.ElectronicsScrap = Base.Earbuds,
+            default = Base.ElectronicsScrap,
+        }
+    }
+}

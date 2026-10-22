@@ -1,0 +1,8 @@
+name=Dismantle Electronics Fix
+id=DismantleElectronicsFix
+author=facundoramos-dev
+description=Fixes the dismantling of phones, headphones, earbuds and pagers in Build 42. The vanilla recipes split the small electronics in two and the one that matches them by tag uses the handler written for torches, so a device can be taken apart without anything coming out of it. This mod adds the missing recipe, with an output mapper that always resolves.
+version=1.0.0
+modversion=1.0.0
+versionMin=42.0
+url=https://github.com/facundoramos-dev/pz-dismantle-electronics
