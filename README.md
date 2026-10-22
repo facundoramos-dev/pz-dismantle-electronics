@@ -89,6 +89,26 @@ and outputs on top of the vanilla ones.
 So this mod ships a **new** recipe with its own name, and leaves the vanilla
 ones alone.
 
+## Installing it on a server
+
+A server needs two lines in `server-data/Server/pzserver.ini`, and both are
+needed:
+
+```
+WorkshopItems=...;WORKSHOP_ID
+Mods=...;DismantleElectronicsFix
+```
+
+`WorkshopItems=` is the list of Workshop items the server downloads, and
+`Mods=` is the list of mod ids it loads. The order in `Mods=` matters: the
+frameworks go first and the translation mod goes last.
+
+**The mod cannot be enabled before it is published.** A mod that is only in
+the server's `mods/` folder has no Workshop id, so the server sends the
+client a mod list it cannot fulfil: the client reports the mod as missing
+and drops the connection. The same applies to any local mod, not just this
+one.
+
 ## Layout
 
 ```

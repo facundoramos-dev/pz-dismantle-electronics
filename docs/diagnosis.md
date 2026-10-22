@@ -225,3 +225,22 @@ the vanilla one in place.
   the crafting UI is being built, before any recipe runs. It appears 19 times
   in the session, in bursts of a few seconds, which is the crafting menu
   being opened and closed, not a recipe failing.
+
+## A local mod breaks the client connection
+
+Worth recording, because it is easy to hit while testing a mod like this
+one.
+
+The server sends its mod list to the client in
+`ConnectionDetails.writeMods()`, with the id, the Workshop id and the name
+of each one. The client checks it in `ConnectToServerState` and, when a mod
+is missing, it shows `UI_OnConnectFailed_ModRequired` and disconnects.
+
+A mod that lives only in the server's `mods/` folder has no Workshop id, so
+the client cannot fetch it and the connection is dropped. The server itself
+carries on, which is what makes it confusing: the log shows the mod loading
+and the server starting normally, and only the players see the error.
+
+Both the diagnostic mod used to take these measurements and this mod hit
+that while they were being tested. They have to stay out of `Mods=` until
+they are published to the Workshop.
